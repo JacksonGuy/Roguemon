@@ -10,8 +10,9 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Roguémon");
     SetTargetFPS(60);
 
-    Player player(Vector2(50, 50));
-    player.setTexture(LoadTexture("./content/player.png"));
+    Player player = {50.0f, 50.0f};
+    Texture2D playerTexture = LoadTexture("./content/player.png"); 
+    player.setTexture(playerTexture);
 
     Camera2D camera;
     camera.target = player.getPosition();

@@ -12,12 +12,13 @@ class Player {
         Texture2D texture;
 
     public:
-        Player(Vector2 pos);
+        Player(int x, int y);
         
         void setPosition(Vector2);
         Vector2 getPosition();
         
         void setTexture(Texture2D&);
+        Texture2D getTexture();
 };
 
 #endif

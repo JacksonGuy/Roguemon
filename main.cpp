@@ -1,7 +1,12 @@
 #include <iostream>
+#include <cmath>
 #include "./raylib.h"
 
+#include "./src/util.h"
 #include "./src/Player.h"
+#include "./src/Item.h"
+#include "./src/Enemy.h"
+#include "./src/Creature.h"
 
 int main() {
     const int screenWidth = 800;
@@ -11,23 +16,35 @@ int main() {
     SetTargetFPS(60);
 
     Player player = {50.0f, 50.0f};
-    Texture2D playerTexture = LoadTexture("./content/player.png"); 
-    player.setTexture(playerTexture);
+    player.texture = SetTexture("./content/player.png");
+
+    Enemy testEnemy = {250.f, 250.f};
+    testEnemy.texture = SetTexture("./content/test.png");
 
     Camera2D camera;
-    camera.target = player.getPosition();
+    camera.target = player.position;
     camera.offset = (Vector2){screenWidth/2, screenHeight/2};
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
+    char positionText[100]; // This is probably bad
+
     while (!WindowShouldClose()) {
+        player.move();
+        Vector2 playerPos = player.position;
+        camera.target = playerPos;
+        
         BeginDrawing();
         ClearBackground(WHITE);
-        DrawText("This is some text", 20, 20, 20, BLACK);
+        DrawFPS(0,0);
         
+        sprintf(positionText, "X: %.0f, Y: %.0f", playerPos.x, playerPos.y);
+        DrawText(positionText, 10, screenHeight - 30, 20, BLACK);
+
         BeginMode2D(camera);
-            Vector2 playerPos = player.getPosition();
-            DrawTexture(player.getTexture(), playerPos.x, playerPos.y, WHITE);
+            player.Draw();
+            testEnemy.Draw();
+            DrawRectangle(300, 20, 50, 50, RED);
         EndMode2D();
 
         EndDrawing();

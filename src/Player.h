@@ -1,24 +1,21 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <iostream>
+#include <vector>
 #include "raylib.h"
 
-class Player {
-    private:
-        int health;
-        int maxHealth;
-        Vector2 position;
-        int speed;
-        Texture2D texture;
+#include "Creature.h"
+#include "Item.h"
 
+class Player : public Creature {
     public:
-        Player(int x, int y);
-        
-        void setPosition(Vector2);
-        Vector2 getPosition();
-        
-        void setTexture(Texture2D&);
-        Texture2D getTexture();
+        std::vector<Item> items;
+        float critChance;
+        float blackChance; 
+
+        Player(float, float);
+        void move();
 };
 
 #endif

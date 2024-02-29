@@ -6,13 +6,16 @@
 #include <vector>
 
 #include "Button.h"
+#include "MenuText.h"
 
 class Menu {
     public:
         Vector2 position;
         Texture2D background;
-        
-        std::vector<std::string> textOptions;
+        int width;
+        int height;
+
+        std::vector<MenuText> textOptions;
         std::vector<Button> buttons;
 
         void Draw();

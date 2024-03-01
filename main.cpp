@@ -34,6 +34,9 @@ int main() {
     bool showEscMenu = false;
     Menu EscMenu;
     EscMenu.position = (Vector2){screenWidth-150, 20};
+    EscMenu.width = 75;
+    EscMenu.height = 175;
+    
     Button ReturnButton;
 
     while (!WindowShouldClose()) {

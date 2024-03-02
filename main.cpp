@@ -7,8 +7,6 @@
 #include "./src/Item.h"
 #include "./src/Enemy.h"
 #include "./src/Creature.h"
-#include "./src/Menu.h"
-#include "./src/Button.h"
 
 int main() {
     const int screenWidth = 800;
@@ -32,20 +30,21 @@ int main() {
     char positionText[100]; // This is probably bad
 
     bool showEscMenu = false;
-    Menu EscMenu;
-    EscMenu.position = (Vector2){screenWidth-150, 20};
-    EscMenu.width = 75;
-    EscMenu.height = 175;
     
-    Button ReturnButton;
 
     while (!WindowShouldClose()) {
         player.move();
         Vector2 playerPos = player.position;
         camera.target = playerPos;
 
-        if (IsKeyPressed(KEY_ESCAPE)) {
+        if (IsKeyPressed(KEY_TAB)) {
             showEscMenu = !showEscMenu;
+        }
+
+        int settingsMenu = EscMenu.checkButtons();
+        if (settingsMenu == 1) {
+            CloseWindow();
+            return 0;
         }
 
         BeginDrawing();
@@ -54,11 +53,6 @@ int main() {
         
         sprintf(positionText, "X: %.0f, Y: %.0f", playerPos.x, playerPos.y);
         DrawText(positionText, 10, screenHeight - 30, 20, BLACK);
-
-        if (showEscMenu) {
-            EscMenu.Draw();
-            EscMenu.checkButtons();
-        }
 
         BeginMode2D(camera);
             player.Draw();

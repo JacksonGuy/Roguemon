@@ -7,31 +7,94 @@
 #include "./src/Item.h"
 #include "./src/Enemy.h"
 #include "./src/Creature.h"
+#include "./src/testAbilities.h"
+#include "./src/Button.h"
+
+std::vector<std::string> abilityPool = {
+    "Test 1",
+    "Test 2",
+    "Test 3",
+    "Test 4"
+};
+
+typedef std::map<std::string, std::function<void(Creature&, Creature&)>> FunctionMap;
+
+FunctionMap abilities = {
+    {"Test 1", test1},
+    {"Test 2", test2},
+    {"Test 3", test3},
+    {"Test 4", test4}
+};
 
 void combatLoop(Player& player, Enemy& enemy) {
     bool displayAbilities = true;
     bool displayItems = false;
+    bool playerTurn = true;
+
+    Button abl1((Vector2){350, 520}, player.abilities[0].c_str());
+    Button abl2((Vector2){350, 560}, player.abilities[1].c_str());
+    Button abl3((Vector2){500, 520}, player.abilities[2].c_str());
+    Button abl4((Vector2){500, 560}, player.abilities[3].c_str());
     
+    char playerHealth[100];
+    char enemyHealth[100];
+
     while (true) {
         if (IsKeyPressed(KEY_SPACE)) {
             return;
         }
 
+        if (!playerTurn) {
+            std::string choice = enemy.combatAI(player);
+            std::cout << "Enemy used: " << choice << std::endl; 
+            abilities[choice](enemy, player);
+            playerTurn = true;
+        }
+
+        Vector2 mpos = GetMousePosition();
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && playerTurn) {
+            // Some high quality code here
+            if (CheckCollisionPointRec(mpos, abl1.rect)) {
+                abilities[abl1.text](player, enemy);
+                playerTurn = false;
+            }
+            if (CheckCollisionPointRec(mpos, abl2.rect)) {
+                abilities[abl2.text](player, enemy);
+                playerTurn = false;
+            }
+            if (CheckCollisionPointRec(mpos, abl3.rect)) {
+                abilities[abl3.text](player, enemy);
+                playerTurn = false;
+            }
+            if (CheckCollisionPointRec(mpos, abl4.rect)) {
+                abilities[abl4.text](player, enemy);
+                playerTurn = false;
+            }
+        }
+
         BeginDrawing();
         ClearBackground(WHITE);
 
-        DrawTexture(player.texture, 100, 400, WHITE);
-        DrawTexture(enemy.texture, 700, 100, WHITE);
-        DrawText("BATTLE!!!", 350, 30, 20, BLACK);
-        
-        DrawRectangle(0, 500, 800, 100, GRAY);
-        DrawText("Abilities", 50, 520, 20, WHITE);
-        DrawText("Items", 50, 560, 20, WHITE);
+            DrawTexture(player.texture, 100, 400, WHITE);
+            DrawTexture(enemy.texture, 700, 100, WHITE);
+            DrawText("BATTLE!!!", 350, 30, 20, BLACK);
 
-        DrawText("Ability 1", 350, 520, 20, WHITE);
-        DrawText("Ability 2", 350, 560, 20, WHITE);
-        DrawText("Ability 3", 500, 520, 20, WHITE);
-        DrawText("Ability 4", 500, 560, 20, WHITE);
+            sprintf(playerHealth, "HP: %d/%d", player.health, player.maxHealth);
+            sprintf(enemyHealth, "HP: %d/%d", enemy.health, enemy.maxHealth);
+            //DrawText((std::string){"HP: %d/%d", enemy.health, enemy.maxHealth}.c_str(), 700, 80, 20, WHITE);
+            //DrawText((std::string){"HP: %d/%d", player.health, player.maxHealth}.c_str(), 100, 380, 20, WHITE);
+            DrawText(playerHealth, 100, 380, 20, BLACK);
+            DrawText(enemyHealth, 700, 80, 20, BLACK);
+
+
+            DrawRectangle(0, 500, 800, 100, GRAY);
+            DrawText("Abilities", 50, 520, 20, WHITE);
+            DrawText("Items", 50, 560, 20, WHITE);
+
+            abl1.Draw();
+            abl2.Draw();
+            abl3.Draw();
+            abl4.Draw();
 
         EndDrawing();
     }
@@ -47,10 +110,12 @@ int main() {
 
     Player player = {50.0f, 50.0f};
     player.texture = SetTexture("./content/player.png", 64, 64);
+    player.GetRandomAbilities(abilityPool);
 
     std::vector<Enemy> enemies;
     Enemy testEnemy = {250.f, 250.f};
     testEnemy.texture = SetTexture("./content/test.png", 64, 64);
+    testEnemy.GetRandomAbilities(abilityPool);
     enemies.push_back(testEnemy);
 
     // Define camera
@@ -65,7 +130,8 @@ int main() {
     // Create ESC menu for settings
     bool showEscMenu = false;
     Texture2D EscMenuBackground = SetTexture("./content/default_menu.png", 128, 256);
-    Rectangle QuitRect = {screenWidth - 150, 230, 9*20, 20};
+    //Rectangle QuitRect = {screenWidth - 150, 230, 9*20, 20};
+    Button QuitButton((Vector2){screenWidth - 150, 230}, "Quit Game");
 
     while (!WindowShouldClose()) {
         Vector2 mpos = GetMousePosition();
@@ -96,7 +162,9 @@ int main() {
         // Aka non-UI elements
         BeginMode2D(camera);
             player.Draw();
-            testEnemy.Draw(); // Change this 
+            for (Enemy e : enemies) {
+                e.Draw();
+            } 
         EndMode2D();
 
         DrawFPS(0,0);                                                           // Draw FPS
@@ -106,10 +174,11 @@ int main() {
         if (showEscMenu) {
             DrawTexture(EscMenuBackground, screenWidth - 160, 25, WHITE);
             DrawText("Settings", screenWidth - 150, 35, 20, WHITE);
-            DrawText("Quit Game", screenWidth - 150, 230, 20, WHITE);
+            //DrawText("Quit Game", screenWidth - 150, 230, 20, WHITE);
+            QuitButton.Draw();
 
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                if (CheckCollisionPointRec(mpos, QuitRect)) {
+                if (CheckCollisionPointRec(mpos, QuitButton.rect)) {
                     CloseWindow();
                     return 0;
                 }

@@ -11,8 +11,6 @@
 class Player : public Creature {
     public:
         std::vector<Item> items;
-        float critChance;
-        float blackChance; 
 
         Player(float, float);
         void move();

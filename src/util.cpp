@@ -3,14 +3,14 @@
 #include "raylib.h"
 #include "Creature.h"
 
-Texture2D SetTexture(std::string path) {
+Texture2D SetTexture(std::string path, int width, int height) {
     Image texImage = LoadImage(path.c_str());
-    ImageResize(&texImage, 64, 64); // TODO change this
+    ImageResize(&texImage, width, height);
     Texture2D texture = LoadTextureFromImage(texImage);
     UnloadImage(texImage);
     return texture;
 }
 
-float getDist(Creature c1, Creature c2) {
-    return sqrt( pow(c2.position.y - c1.position.y, 2) + pow(c2.position.x - c1.position.x, 2)); 
+float getDist(Vector2 c1, Vector2 c2) {
+    return sqrt( pow(c2.y - c1.y, 2) + pow(c2.x - c1.x, 2) ); 
 }

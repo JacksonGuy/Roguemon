@@ -37,16 +37,6 @@ int main() {
         Vector2 playerPos = player.position;
         camera.target = playerPos;
 
-        if (IsKeyPressed(KEY_TAB)) {
-            showEscMenu = !showEscMenu;
-        }
-
-        int settingsMenu = EscMenu.checkButtons();
-        if (settingsMenu == 1) {
-            CloseWindow();
-            return 0;
-        }
-
         BeginDrawing();
         ClearBackground(WHITE);
         DrawFPS(0,0);

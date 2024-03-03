@@ -36,3 +36,7 @@ void Creature::GetRandomAbilities(std::vector<std::string> pool) {
         }
     }
 }
+
+bool Creature::IsDead() {
+    return (this->health <= 0);
+}

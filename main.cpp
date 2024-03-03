@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <functional>
 #include "./raylib.h"
 
 #include "./src/util.h"
@@ -35,6 +36,8 @@ void combatLoop(Player& player, Enemy& enemy) {
     Button abl2((Vector2){350, 560}, player.abilities[1].c_str());
     Button abl3((Vector2){500, 520}, player.abilities[2].c_str());
     Button abl4((Vector2){500, 560}, player.abilities[3].c_str());
+
+    Button combatButtons[] = {abl1, abl2, abl3, abl4};
     
     char playerHealth[100];
     char enemyHealth[100];
@@ -48,27 +51,28 @@ void combatLoop(Player& player, Enemy& enemy) {
             std::string choice = enemy.combatAI(player);
             std::cout << "Enemy used: " << choice << std::endl; 
             abilities[choice](enemy, player);
+
+            // TODO Do something else here in the future
+            if (player.IsDead()) {
+                std::cout << "You Died!" << std::endl;
+                exit(0);
+            }
+
             playerTurn = true;
         }
 
         Vector2 mpos = GetMousePosition();
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && playerTurn) {
             // Some high quality code here
-            if (CheckCollisionPointRec(mpos, abl1.rect)) {
-                abilities[abl1.text](player, enemy);
-                playerTurn = false;
-            }
-            if (CheckCollisionPointRec(mpos, abl2.rect)) {
-                abilities[abl2.text](player, enemy);
-                playerTurn = false;
-            }
-            if (CheckCollisionPointRec(mpos, abl3.rect)) {
-                abilities[abl3.text](player, enemy);
-                playerTurn = false;
-            }
-            if (CheckCollisionPointRec(mpos, abl4.rect)) {
-                abilities[abl4.text](player, enemy);
-                playerTurn = false;
+            for (Button abl : combatButtons) {
+                if (CheckCollisionPointRec(mpos, abl.rect)) {
+                    abilities[abl.text](player, enemy);
+                    playerTurn = false;
+                    if (enemy.IsDead()) {
+                        // TODO things after enemy killed
+                        return;
+                    }
+                }
             }
         }
 
@@ -81,11 +85,8 @@ void combatLoop(Player& player, Enemy& enemy) {
 
             sprintf(playerHealth, "HP: %d/%d", player.health, player.maxHealth);
             sprintf(enemyHealth, "HP: %d/%d", enemy.health, enemy.maxHealth);
-            //DrawText((std::string){"HP: %d/%d", enemy.health, enemy.maxHealth}.c_str(), 700, 80, 20, WHITE);
-            //DrawText((std::string){"HP: %d/%d", player.health, player.maxHealth}.c_str(), 100, 380, 20, WHITE);
             DrawText(playerHealth, 100, 380, 20, BLACK);
             DrawText(enemyHealth, 700, 80, 20, BLACK);
-
 
             DrawRectangle(0, 500, 800, 100, GRAY);
             DrawText("Abilities", 50, 520, 20, WHITE);
@@ -126,6 +127,7 @@ int main() {
     camera.zoom = 1.0f;
 
     char positionText[100]; // This is probably bad
+    char healthText[100];
 
     // Create ESC menu for settings
     bool showEscMenu = false;
@@ -170,6 +172,9 @@ int main() {
         DrawFPS(0,0);                                                           // Draw FPS
         sprintf(positionText, "X: %.0f, Y: %.0f", playerPos.x, playerPos.y);    // Player coordinates
         DrawText(positionText, 10, screenHeight - 30, 20, BLACK);               // Draw coordinates 
+        
+        sprintf(healthText, "HP: %d/%d", player.health, player.maxHealth);
+        DrawText(healthText, 10, 30, 20, BLACK);
 
         if (showEscMenu) {
             DrawTexture(EscMenuBackground, screenWidth - 160, 25, WHITE);

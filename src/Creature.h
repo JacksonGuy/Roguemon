@@ -34,7 +34,7 @@ class Creature {
         int attackSpeed = 1;
 
         float critChance = 0;
-        float blackChance = 0; 
+        float blockChance = 0; 
 
         // Basically just a list of all usable abilities
         std::string abilities[4]; // Maximum 4 usable abilities

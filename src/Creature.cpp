@@ -2,6 +2,9 @@
 #include <cstdlib>
 #include <time.h>
 
+#include "Bleed.h"
+#include <iostream>
+
 void Creature::Draw() {
     DrawTexture(this->texture, this->position.x, this->position.y, WHITE);
 }
@@ -39,4 +42,20 @@ void Creature::GetRandomAbilities(std::vector<std::string> pool) {
 
 bool Creature::IsDead() {
     return (this->health <= 0);
+}
+
+void Creature::CalculateEffects() {
+    std::cout << "Debuffs size: " << this->harmEffects.size() << std::endl;
+    for (int i = 0; i < this->harmEffects.size(); i++) {
+        std::cout << "1" << std::endl;
+        (this->harmEffects[i])->effect(*this); // PROBLEM GUY HERE
+        std::cout << "4" << std::endl;
+    }
+    std::cout << "It works!" << std::endl;
+
+    /*
+    for (Effect* e : helpEffects) {
+        e->effect(*this);
+    } 
+    */
 }

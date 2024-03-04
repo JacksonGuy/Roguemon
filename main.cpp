@@ -48,11 +48,25 @@ void combatLoop(Player& player, Enemy& enemy) {
         }
 
         if (!playerTurn) {
+            enemy.CalculateEffects();
+
+            if (enemy.IsDead()) {
+                // TODO
+                return;
+            }
+
             std::string choice = enemy.combatAI(player);
             std::cout << "Enemy used: " << choice << std::endl; 
             abilities[choice](enemy, player);
 
             // TODO Do something else here in the future
+            if (player.IsDead()) {
+                std::cout << "You Died!" << std::endl;
+                exit(0);
+            }
+
+            player.CalculateEffects();
+
             if (player.IsDead()) {
                 std::cout << "You Died!" << std::endl;
                 exit(0);
@@ -68,6 +82,7 @@ void combatLoop(Player& player, Enemy& enemy) {
                 if (CheckCollisionPointRec(mpos, abl.rect)) {
                     abilities[abl.text](player, enemy);
                     playerTurn = false;
+                    
                     if (enemy.IsDead()) {
                         // TODO things after enemy killed
                         return;

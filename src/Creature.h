@@ -39,12 +39,13 @@ class Creature {
         // Basically just a list of all usable abilities
         std::string abilities[4]; // Maximum 4 usable abilities
 
-        std::vector<Effect> harmEffects;
-        std::vector<Effect> helpEffects;
+        std::vector<Effect*> harmEffects;
+        std::vector<Effect*> helpEffects;
 
         void Draw();
-        void GetRandomAbilities(std::vector<std::string>);
+        void GetRandomAbilities(std::vector<std::string> pool);
         bool IsDead();
+        void CalculateEffects();
 };
 
 #endif

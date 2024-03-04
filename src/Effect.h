@@ -1,12 +1,17 @@
 #ifndef EFFECT_H
 #define EFFECT_H
 
-#include "Creature.h"
+#include <string>
+class Creature;
 
 class Effect {
-    int duration;
-    virtual void active(Creature& target);
-    virtual void deactive(Creature& target);
+    public:
+        std::string name;
+        int id;
+        int duration = 1;
+        virtual void active(Creature& target) = 0;
+        virtual void effect(Creature& target) = 0; 
+        virtual void deactive(Creature& target) = 0;
 };
 
 #endif

@@ -5,13 +5,11 @@
 
 void test1(Creature& user, Creature& target) {
     target.health -= user.attack;
-    std::cout << "Attack 1" << std::endl;
 }
 
 void test2(Creature& user, Creature& target) {
-    Bleed bleed("Bleed", 3, 1);
-    target.harmEffects.push_back(&bleed);
-    std::cout << "Bleed ability passed" << std::endl;
+    Bleed* bleed = new Bleed("Bleed", &target, 3, 1);
+    target.harmEffects.push_back(bleed);
 }
 
 void test3(Creature& user, Creature& target) {

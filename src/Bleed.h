@@ -7,10 +7,9 @@ class Bleed : public Effect {
     public:
         int damage;
 
-        Bleed(std::string name, int duration, int damage);
-        void active(Creature& target);
-        void effect(Creature& target);
-        void deactive(Creature& target);
+        Bleed(std::string name, Creature* target, int duration, int damage);
+        void effect();
+        ~Bleed();
 };
 
 #endif

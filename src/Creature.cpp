@@ -45,13 +45,9 @@ bool Creature::IsDead() {
 }
 
 void Creature::CalculateEffects() {
-    std::cout << "Debuffs size: " << this->harmEffects.size() << std::endl;
     for (int i = 0; i < this->harmEffects.size(); i++) {
-        std::cout << "1" << std::endl;
-        (this->harmEffects[i])->effect(*this); // PROBLEM GUY HERE
-        std::cout << "4" << std::endl;
+        (this->harmEffects[i])->effect();
     }
-    std::cout << "It works!" << std::endl;
 
     /*
     for (Effect* e : helpEffects) {

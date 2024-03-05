@@ -11,6 +11,8 @@
 #include "./src/testAbilities.h"
 #include "./src/Button.h"
 
+#include "./src/Items/ArmorPad.h"
+
 std::vector<std::string> abilityPool = {
     "Test 1",
     "Test 2",
@@ -26,6 +28,40 @@ FunctionMap abilities = {
     {"Test 3", test3},
     {"Test 4", test4}
 };
+
+std::vector<Item*> passiveItemPool = {
+    new ArmorPad
+};
+
+void combatWin(Player& player) {
+    player.xp += 5;
+    if (player.xp >= player.nextLevelXp) {
+        int remainder = player.nextLevelXp - player.xp;
+        player.xp = remainder;
+        player.levelUp();
+    }
+
+    // TODO probably a memory leak here or something 
+    int itemDrop = rand() % passiveItemPool.size();
+    Item* prefab = passiveItemPool[itemDrop];
+    if (prefab->name == "Armor Pad") {
+        ArmorPad* ref = (ArmorPad*)prefab;
+        ArmorPad* newItem = new ArmorPad(ref);
+        player.addItem(newItem);
+
+        std::cout << "Player Gained Item: " << newItem->name << std::endl;
+        std::cout << "Player Item Count: " << player.items.size() << std::endl;
+    
+        std::cout << "\nItems: " << std::endl;
+        for (Item* item : player.items) {
+            std::cout << item->name << std::endl;
+        }
+        
+        std::cout << "\nNew Stats: " << std::endl;
+        std::cout << "Attack: " << player.attack << std::endl;
+        std::cout << "Defense: " << player.defense << std::endl;
+    }
+}
 
 void combatLoop(Player& player, Enemy& enemy) {
     bool displayAbilities = true;
@@ -51,7 +87,7 @@ void combatLoop(Player& player, Enemy& enemy) {
             enemy.CalculateEffects();
 
             if (enemy.IsDead()) {
-                // TODO
+                combatWin(player);
                 return;
             }
 
@@ -77,14 +113,13 @@ void combatLoop(Player& player, Enemy& enemy) {
 
         Vector2 mpos = GetMousePosition();
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && playerTurn) {
-            // Some high quality code here
             for (Button abl : combatButtons) {
                 if (CheckCollisionPointRec(mpos, abl.rect)) {
                     abilities[abl.text](player, enemy);
                     playerTurn = false;
                     
                     if (enemy.IsDead()) {
-                        // TODO things after enemy killed
+                        combatWin(player);
                         return;
                     }
                 }
@@ -121,6 +156,9 @@ int main() {
     const int screenHeight = 600;
     const int agroRange = 250;
 
+    srand(time(0)); // Random number generator seed
+                    // Only call this once
+
     InitWindow(screenWidth, screenHeight, "Roguémon");
     SetTargetFPS(60);
 
@@ -143,6 +181,7 @@ int main() {
 
     char positionText[100]; // This is probably bad
     char healthText[100];
+    char xpText[100];
 
     // Create ESC menu for settings
     bool showEscMenu = false;
@@ -191,10 +230,12 @@ int main() {
         sprintf(healthText, "HP: %d/%d", player.health, player.maxHealth);
         DrawText(healthText, 10, 30, 20, BLACK);
 
+        sprintf(xpText, "XP: %d/%d", player.xp, player.nextLevelXp);
+        DrawText(xpText, 10, 60, 20, BLACK);
+
         if (showEscMenu) {
             DrawTexture(EscMenuBackground, screenWidth - 160, 25, WHITE);
             DrawText("Settings", screenWidth - 150, 35, 20, WHITE);
-            //DrawText("Quit Game", screenWidth - 150, 230, 20, WHITE);
             QuitButton.Draw();
 
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {

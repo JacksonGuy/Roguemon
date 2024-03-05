@@ -10,10 +10,12 @@
 
 class Player : public Creature {
     public:
-        std::vector<Item> items;
+        std::vector<Item*> items;
 
-        Player(float, float);
+        Player(float x, float y);
         void move();
+        void levelUp();
+        void addItem(Item* item);
 };
 
 #endif

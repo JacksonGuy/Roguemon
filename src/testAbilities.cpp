@@ -1,7 +1,7 @@
 #include "testAbilities.h"
 #include <iostream>
 
-#include "Bleed.h"
+#include "./Effects/Bleed.h"
 
 void test1(Creature& user, Creature& target) {
     target.health -= user.attack;

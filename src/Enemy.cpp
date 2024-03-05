@@ -13,7 +13,6 @@ Enemy::Enemy(float x, float y) {
 }
 
 std::string Enemy::combatAI(Player& player) {
-    srand(time(0));
     int r = rand() % 4; 
     return this->abilities[r];
 }

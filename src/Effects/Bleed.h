@@ -1,7 +1,7 @@
 #ifndef BLEED_H
 #define BLEED_H
 
-#include "Effect.h"
+#include "../Effect.h"
 
 class Bleed : public Effect {
     public:

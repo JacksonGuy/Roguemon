@@ -1,7 +1,7 @@
 #include "Bleed.h"
 #include <iostream>
 #include <time.h>
-#include "Creature.h"
+#include "../Creature.h"
 
 Bleed::Bleed(std::string name, Creature* target, int duration, int damage) {
     this->name = name;

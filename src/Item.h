@@ -9,7 +9,7 @@
 enum Modifier {
     // All creatures
     Health,
-    Damage,
+    Attack,
     Defense,
     AttackSpeed,
 
@@ -23,18 +23,14 @@ class Item {
         std::string name;
 
         // String = stat, int = how to modify (+/-)
-        std::map<std::string, int> modifiers; 
-    
-        // Cool feature:
-        // Function pointer. Basically we'll have this point
-        // to whatever item specific function and call it
-        // during combat.
-        void (*effect_func)();
+        std::map<Modifier, int> modifiers; 
 
         Vector2 position;
         Texture2D texture;
 
-        Item();
+        virtual void effect() = 0;
+        Item() {};
+        Item(Item* ref) {};
 };
 
 #endif

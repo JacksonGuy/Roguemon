@@ -94,6 +94,7 @@ void combatLoop(Player& player, Enemy& enemy) {
 
             player.CalculateEffects();
 
+            // TODO
             if (player.IsDead()) {
                 std::cout << "You Died!" << std::endl;
                 //combatOver = true;
@@ -130,7 +131,7 @@ void combatLoop(Player& player, Enemy& enemy) {
                     sprintf(victoryText, "You Win! You gained an item: %s", newItem->name.c_str());
                     DrawText(victoryText, 100, 540, 20, WHITE);
                     DrawText("Press enter to continue...", 100, 570, 20, WHITE);
-                    DrawTexture(newItem->texture, newItem->position.x, newItem->position.y, WHITE);
+                    DrawTexture(newItem->texture, 700, 100, WHITE);
                 } else {
                     DrawText("DEFEAT!!!", 350, 30, 20, BLACK);
                     DrawText("Press enter to exit...", 100, 570, 20, WHITE);

@@ -29,9 +29,7 @@ FunctionMap abilities = {
     {"Test 4", test4}
 };
 
-std::vector<Item*> passiveItemPool = {
-    new ArmorPad
-};
+std::vector<Item*> passiveItemPool;
 
 void combatWin(Player& player) {
     player.xp += 5;
@@ -48,25 +46,15 @@ void combatWin(Player& player) {
         ArmorPad* ref = (ArmorPad*)prefab;
         ArmorPad* newItem = new ArmorPad(ref);
         player.addItem(newItem);
-
-        std::cout << "Player Gained Item: " << newItem->name << std::endl;
-        std::cout << "Player Item Count: " << player.items.size() << std::endl;
-    
-        std::cout << "\nItems: " << std::endl;
-        for (Item* item : player.items) {
-            std::cout << item->name << std::endl;
-        }
-        
-        std::cout << "\nNew Stats: " << std::endl;
-        std::cout << "Attack: " << player.attack << std::endl;
-        std::cout << "Defense: " << player.defense << std::endl;
-    }
+    }       
 }
 
 void combatLoop(Player& player, Enemy& enemy) {
     bool displayAbilities = true;
     bool displayItems = false;
     bool playerTurn = true;
+    bool combatOver = false;
+    bool victory = false;
 
     Button abl1((Vector2){350, 520}, player.abilities[0].c_str());
     Button abl2((Vector2){350, 560}, player.abilities[1].c_str());
@@ -75,11 +63,12 @@ void combatLoop(Player& player, Enemy& enemy) {
 
     Button combatButtons[] = {abl1, abl2, abl3, abl4};
     
-    char playerHealth[100];
-    char enemyHealth[100];
+    char playerHealth[256];
+    char enemyHealth[256];
+    char victoryText[256];
 
     while (true) {
-        if (IsKeyPressed(KEY_SPACE)) {
+        if (IsKeyPressed(KEY_ENTER) && combatOver) {
             return;
         }
 
@@ -88,7 +77,8 @@ void combatLoop(Player& player, Enemy& enemy) {
 
             if (enemy.IsDead()) {
                 combatWin(player);
-                return;
+                combatOver = true;
+                victory = true;
             }
 
             std::string choice = enemy.combatAI(player);
@@ -98,6 +88,7 @@ void combatLoop(Player& player, Enemy& enemy) {
             // TODO Do something else here in the future
             if (player.IsDead()) {
                 std::cout << "You Died!" << std::endl;
+                //combatOver = true;
                 exit(0);
             }
 
@@ -105,6 +96,7 @@ void combatLoop(Player& player, Enemy& enemy) {
 
             if (player.IsDead()) {
                 std::cout << "You Died!" << std::endl;
+                //combatOver = true;
                 exit(0);
             }
 
@@ -112,7 +104,7 @@ void combatLoop(Player& player, Enemy& enemy) {
         }
 
         Vector2 mpos = GetMousePosition();
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && playerTurn) {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && playerTurn && !combatOver) {
             for (Button abl : combatButtons) {
                 if (CheckCollisionPointRec(mpos, abl.rect)) {
                     abilities[abl.text](player, enemy);
@@ -120,7 +112,8 @@ void combatLoop(Player& player, Enemy& enemy) {
                     
                     if (enemy.IsDead()) {
                         combatWin(player);
-                        return;
+                        combatOver = true;
+                        victory = true;
                     }
                 }
             }
@@ -128,24 +121,38 @@ void combatLoop(Player& player, Enemy& enemy) {
 
         BeginDrawing();
         ClearBackground(WHITE);
+            DrawRectangle(0, 500, 800, 100, GRAY); // Bottom Menu Bar
+
+            if (combatOver) {
+                if (victory) {
+                    Item* newItem = player.items[player.items.size()-1]; 
+                    DrawText("VICTORY!!!", 350, 30, 20, BLACK);
+                    sprintf(victoryText, "You Win! You gained an item: %s", newItem->name.c_str());
+                    DrawText(victoryText, 100, 540, 20, WHITE);
+                    DrawText("Press enter to continue...", 100, 570, 20, WHITE);
+                    DrawTexture(newItem->texture, newItem->position.x, newItem->position.y, WHITE);
+                } else {
+                    DrawText("DEFEAT!!!", 350, 30, 20, BLACK);
+                    DrawText("Press enter to exit...", 100, 570, 20, WHITE);
+                }
+            } else {
+                DrawText("BATTLE!!!", 350, 30, 20, BLACK);
+                DrawTexture(enemy.texture, 700, 100, WHITE);
+                DrawText(enemyHealth, 700, 80, 20, BLACK);
+                sprintf(enemyHealth, "HP: %d/%d", enemy.health, enemy.maxHealth);
+
+                DrawText("Abilities", 50, 520, 20, WHITE);
+                DrawText("Items", 50, 560, 20, WHITE);
+                abl1.Draw();
+                abl2.Draw();
+                abl3.Draw();
+                abl4.Draw();
+            }
 
             DrawTexture(player.texture, 100, 400, WHITE);
-            DrawTexture(enemy.texture, 700, 100, WHITE);
-            DrawText("BATTLE!!!", 350, 30, 20, BLACK);
 
             sprintf(playerHealth, "HP: %d/%d", player.health, player.maxHealth);
-            sprintf(enemyHealth, "HP: %d/%d", enemy.health, enemy.maxHealth);
             DrawText(playerHealth, 100, 380, 20, BLACK);
-            DrawText(enemyHealth, 700, 80, 20, BLACK);
-
-            DrawRectangle(0, 500, 800, 100, GRAY);
-            DrawText("Abilities", 50, 520, 20, WHITE);
-            DrawText("Items", 50, 560, 20, WHITE);
-
-            abl1.Draw();
-            abl2.Draw();
-            abl3.Draw();
-            abl4.Draw();
 
         EndDrawing();
     }
@@ -161,6 +168,8 @@ int main() {
 
     InitWindow(screenWidth, screenHeight, "Roguémon");
     SetTargetFPS(60);
+
+    passiveItemPool.push_back(new ArmorPad);
 
     Player player = {50.0f, 50.0f};
     player.texture = SetTexture("./content/player.png", 64, 64);

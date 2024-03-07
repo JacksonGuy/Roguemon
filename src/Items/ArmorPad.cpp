@@ -8,8 +8,9 @@ ArmorPad::ArmorPad() {
     };
     position = (Vector2){0,0};
     
-    Image image = LoadImage("./Items/textures/testArmor.png"); 
+    Image image = LoadImage("./src/Items/textures/testArmor.png"); 
     texture = LoadTextureFromImage(image);
+    UnloadImage(image);
 }
 
 ArmorPad::ArmorPad(ArmorPad* ref) {

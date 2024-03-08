@@ -1,4 +1,5 @@
 #include "ArmorPad.h"
+#include "../util.h"
 
 ArmorPad::ArmorPad() {
     name = "Armor Pad";
@@ -6,11 +7,9 @@ ArmorPad::ArmorPad() {
         {Defense, 1},
         {BlockChance, 1} // Remember, this is a percentage
     };
+
     position = (Vector2){0,0};
-    
-    Image image = LoadImage("./src/Items/textures/testArmor.png"); 
-    texture = LoadTextureFromImage(image);
-    UnloadImage(image);
+    //texture = SetTexture("./src/Items/textures/testArmor.png", 64, 64);
 }
 
 ArmorPad::ArmorPad(ArmorPad* ref) {

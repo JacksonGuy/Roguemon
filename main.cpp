@@ -45,6 +45,7 @@ void combatWin(Player& player) {
     if (prefab->name == "Armor Pad") {
         ArmorPad* ref = (ArmorPad*)prefab;
         ArmorPad* newItem = new ArmorPad(ref);
+        newItem->texture = SetTexture("./src/Items/textures/testArmor.png", 64, 64);
         player.addItem(newItem);
     }       
 }
@@ -66,6 +67,8 @@ void combatLoop(Player& player, Enemy& enemy) {
     char playerHealth[256];
     char enemyHealth[256];
     char victoryText[256];
+
+    Item* newItem;
 
     while (true) {
         if (IsKeyPressed(KEY_ENTER) && combatOver) {
@@ -126,7 +129,7 @@ void combatLoop(Player& player, Enemy& enemy) {
 
             if (combatOver) {
                 if (victory) {
-                    Item* newItem = player.items[player.items.size()-1]; 
+                    newItem = player.items[player.items.size()-1]; 
                     DrawText("VICTORY!!!", 350, 30, 20, BLACK);
                     sprintf(victoryText, "You Win! You gained an item: %s", newItem->name.c_str());
                     DrawText(victoryText, 100, 540, 20, WHITE);

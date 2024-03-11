@@ -39,7 +39,8 @@ void combatWin(Player& player) {
         player.levelUp();
     }
 
-    // TODO probably a memory leak here or something 
+    // TODO probably a memory leak here or something
+    // Also just terrible code in general
     int itemDrop = rand() % passiveItemPool.size();
     Item* prefab = passiveItemPool[itemDrop];
     if (prefab->name == "Armor Pad") {
@@ -172,6 +173,7 @@ int main() {
 
     InitWindow(screenWidth, screenHeight, "Roguémon");
     SetTargetFPS(60);
+    SetExitKey(KEY_NULL);
 
     passiveItemPool.push_back(new ArmorPad);
 
@@ -192,15 +194,17 @@ int main() {
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
-    char positionText[100]; // This is probably bad
-    char healthText[100];
-    char xpText[100];
+    char positionText[256];
+    char healthText[256];
+    char xpText[256];
 
     // Create ESC menu for settings
     bool showEscMenu = false;
     Texture2D EscMenuBackground = SetTexture("./content/default_menu.png", 128, 256);
-    //Rectangle QuitRect = {screenWidth - 150, 230, 9*20, 20};
     Button QuitButton((Vector2){screenWidth - 150, 230}, "Quit Game");
+
+    bool showInventory = false;
+    Texture2D InventoryBackground = SetTexture("./content/default_menu.png", 256, 512);
 
     while (!WindowShouldClose()) {
         Vector2 mpos = GetMousePosition();
@@ -219,8 +223,12 @@ int main() {
             }
         }
 
-        if (IsKeyPressed(KEY_TAB)) {
+        if (IsKeyPressed(KEY_ESCAPE)) {
             showEscMenu = !showEscMenu;
+        }
+
+        if (IsKeyPressed(KEY_I)) {
+            showInventory = !showInventory;
         }
 
         // Start drawing
@@ -256,6 +264,17 @@ int main() {
                     CloseWindow();
                     return 0;
                 }
+            }
+        }
+
+        if (showInventory) {
+            DrawTexture(InventoryBackground, screenWidth - 266, 25, WHITE);
+            DrawText("Inventory", screenWidth - 256, 35, 20, WHITE);
+        
+            int ypos = 55;
+            for (Item* item : player.inventory) {
+                DrawText(item->name.c_str(), screenWidth - 256, ypos, 20, WHITE);
+                ypos += 20;
             }
         }
 

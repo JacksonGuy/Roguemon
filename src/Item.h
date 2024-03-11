@@ -6,6 +6,8 @@
 #include <map>
 #include "raylib.h"
 
+class Creature;
+
 enum Modifier {
     // All creatures
     Health,
@@ -27,6 +29,7 @@ class Item {
 
         Vector2 position;
         Texture2D texture;
+        Creature* target;
 
         virtual void effect() = 0;
         Item() {};

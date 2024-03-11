@@ -32,8 +32,20 @@ void Player::levelUp() {
     health = maxHealth;
 }
 
+void Player::addInventory(Item* item) {
+    inventory.push_back(item);
+    // TODO inventory restrictions? 
+}
+
 void Player::addItem(Item* item) {
     items.push_back(item);
+    
+    // TODO this could maybe be done better
+    // we should probably take more advantage of
+    // the effect function on items and place
+    // this code inside of there.
+    // That way it is more versatile and more organized for
+    // future items.
     std::map<Modifier, int>::iterator it = item->modifiers.begin();
     while (it != item->modifiers.end()) {
         Modifier mod = it->first;

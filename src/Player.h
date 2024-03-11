@@ -11,11 +11,13 @@
 class Player : public Creature {
     public:
         std::vector<Item*> items;
+        std::vector<Item*> inventory;
 
         Player(float x, float y);
         void move();
         void levelUp();
         void addItem(Item* item);
+        void addInventory(Item* item);
 };
 
 #endif

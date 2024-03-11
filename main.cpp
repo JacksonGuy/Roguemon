@@ -75,36 +75,36 @@ void combatLoop(Player& player, Enemy& enemy) {
             return;
         }
 
-        if (!playerTurn) {
+        if (!playerTurn && !enemy.IsDead()) {
             enemy.CalculateEffects();
 
             if (enemy.IsDead()) {
                 combatWin(player);
                 combatOver = true;
                 victory = true;
+            } else {
+                std::string choice = enemy.combatAI(player);
+                std::cout << "Enemy used: " << choice << std::endl; 
+                abilities[choice](enemy, player);
+
+                // TODO Do something else here in the future
+                if (player.IsDead()) {
+                    std::cout << "You Died!" << std::endl;
+                    //combatOver = true;
+                    exit(0);
+                }
+
+                player.CalculateEffects();
+
+                // TODO
+                if (player.IsDead()) {
+                    std::cout << "You Died!" << std::endl;
+                    //combatOver = true;
+                    exit(0);
+                }
+
+                playerTurn = true;
             }
-
-            std::string choice = enemy.combatAI(player);
-            std::cout << "Enemy used: " << choice << std::endl; 
-            abilities[choice](enemy, player);
-
-            // TODO Do something else here in the future
-            if (player.IsDead()) {
-                std::cout << "You Died!" << std::endl;
-                //combatOver = true;
-                exit(0);
-            }
-
-            player.CalculateEffects();
-
-            // TODO
-            if (player.IsDead()) {
-                std::cout << "You Died!" << std::endl;
-                //combatOver = true;
-                exit(0);
-            }
-
-            playerTurn = true;
         }
 
         Vector2 mpos = GetMousePosition();

@@ -1,7 +1,7 @@
 #ifndef HEALTHPOTION_H
 #define HEALTHPOTION_H
 
-#include "./src/Item.h"
+#include "../Item.h"
 
 class HealthPotion : public Item {
     public:

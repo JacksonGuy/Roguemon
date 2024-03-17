@@ -18,6 +18,7 @@ class Player : public Creature {
         void levelUp();
         void addItem(Item* item);
         void addInventory(Item* item);
+        void removeInventory(Item* item);
 };
 
 #endif

@@ -37,6 +37,17 @@ void Player::addInventory(Item* item) {
     // TODO inventory restrictions? 
 }
 
+void Player::removeInventory(Item* item) {
+    for (int i = 0; i < inventory.size(); i++) {
+        Item* invItem = inventory[i];
+        if (invItem == item) {
+            inventory.erase(inventory.begin() + i);
+            free(invItem);
+            break;
+        }
+    }
+}
+
 void Player::addItem(Item* item) {
     items.push_back(item);
     

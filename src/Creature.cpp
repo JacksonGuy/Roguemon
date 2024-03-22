@@ -6,7 +6,7 @@
 #include <iostream>
 
 void Creature::Draw() {
-    DrawTexture(texture, position.x, position.y, WHITE);
+    DrawTexture(*texture, position.x, position.y, WHITE);
 }
 
 // This won't be needed if we choose to have static
@@ -51,4 +51,8 @@ void Creature::CalculateEffects() {
     for (int i = 0; i < helpEffects.size(); i++) {
         helpEffects[i]->effect();
     } 
+}
+
+Texture2D Creature::GetTexture() {
+    return *(this->texture);
 }

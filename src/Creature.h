@@ -20,7 +20,7 @@ class Creature {
     public:
         Vector2 position;
         float speed;
-        Texture2D texture;
+        Texture2D* texture;
 
         CreatureType type;
         int health = 1;
@@ -46,6 +46,8 @@ class Creature {
         void GetRandomAbilities(std::vector<std::string> pool);
         bool IsDead();
         void CalculateEffects();
+
+        Texture2D GetTexture();
 };
 
 #endif

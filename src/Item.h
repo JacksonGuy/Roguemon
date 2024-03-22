@@ -28,12 +28,15 @@ class Item {
         std::map<Modifier, int> modifiers; 
 
         Vector2 position;
-        Texture2D texture;
+        Texture2D* texture;
         Creature* target;
 
         virtual void effect() = 0;
         Item() {};
         Item(Item* ref) {};
+        Texture2D GetTexture() {
+            return *texture;
+        };
 };
 
 #endif

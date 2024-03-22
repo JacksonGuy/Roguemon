@@ -5,7 +5,7 @@
 #include "raylib.h"
 #include "Creature.h"
 
-Texture2D SetTexture(std::string, int, int);
+Texture2D* SetTexture(std::string path, int width, int height);
 float getDist(Vector2, Vector2);
 
 #endif

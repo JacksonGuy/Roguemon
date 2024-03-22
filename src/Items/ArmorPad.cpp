@@ -9,7 +9,7 @@ ArmorPad::ArmorPad() {
     };
 
     position = (Vector2){0,0};
-    //texture = SetTexture("./src/Items/textures/testArmor.png", 64, 64);
+    texture = SetTexture("./src/Items/textures/testArmor.png", 64, 64);
 }
 
 ArmorPad::ArmorPad(ArmorPad* ref) {

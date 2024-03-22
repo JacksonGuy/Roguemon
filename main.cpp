@@ -11,7 +11,11 @@
 #include "./src/testAbilities.h"
 #include "./src/Button.h"
 
+// Passive items
 #include "./src/Items/ArmorPad.h"
+
+// Usable Items
+#include "./src/Items/HealthPotion.h"
 
 std::vector<std::string> abilityPool = {
     "Test 1",
@@ -135,14 +139,14 @@ void combatLoop(Player& player, Enemy& enemy) {
                     sprintf(victoryText, "You Win! You gained an item: %s", newItem->name.c_str());
                     DrawText(victoryText, 100, 540, 20, WHITE);
                     DrawText("Press enter to continue...", 100, 570, 20, WHITE);
-                    DrawTexture(newItem->texture, 700, 100, WHITE);
+                    DrawTexture(newItem->GetTexture(), 700, 100, WHITE);
                 } else {
                     DrawText("DEFEAT!!!", 350, 30, 20, BLACK);
                     DrawText("Press enter to exit...", 100, 570, 20, WHITE);
                 }
             } else {
                 DrawText("BATTLE!!!", 350, 30, 20, BLACK);
-                DrawTexture(enemy.texture, 700, 100, WHITE);
+                DrawTexture(enemy.GetTexture(), 700, 100, WHITE);
                 DrawText(enemyHealth, 700, 80, 20, BLACK);
                 sprintf(enemyHealth, "HP: %d/%d", enemy.health, enemy.maxHealth);
 
@@ -154,7 +158,7 @@ void combatLoop(Player& player, Enemy& enemy) {
                 abl4.Draw();
             }
 
-            DrawTexture(player.texture, 100, 400, WHITE);
+            DrawTexture(player.GetTexture(), 100, 400, WHITE);
 
             sprintf(playerHealth, "HP: %d/%d", player.health, player.maxHealth);
             DrawText(playerHealth, 100, 380, 20, BLACK);
@@ -180,6 +184,7 @@ int main() {
     Player player = {50.0f, 50.0f};
     player.texture = SetTexture("./content/player.png", 64, 64);
     player.GetRandomAbilities(abilityPool);
+    player.inventory.push_back(new HealthPotion);
 
     std::vector<Enemy> enemies;
     Enemy testEnemy = {250.f, 250.f};
@@ -200,11 +205,11 @@ int main() {
 
     // Create ESC menu for settings
     bool showEscMenu = false;
-    Texture2D EscMenuBackground = SetTexture("./content/default_menu.png", 128, 256);
+    Texture2D EscMenuBackground = *SetTexture("./content/default_menu.png", 128, 256);
     Button QuitButton((Vector2){screenWidth - 150, 230}, "Quit Game");
 
     bool showInventory = false;
-    Texture2D InventoryBackground = SetTexture("./content/default_menu.png", 256, 512);
+    Texture2D InventoryBackground = *SetTexture("./content/default_menu.png", 256, 512);
 
     while (!WindowShouldClose()) {
         Vector2 mpos = GetMousePosition();
